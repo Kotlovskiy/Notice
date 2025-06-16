@@ -1,6 +1,7 @@
 package com.unewexp.notice
 
 import android.util.Log
+import kotlin.collections.mutableListOf
 
 object NotificationManager {
     private var _notifications = mutableListOf<Notification>()
@@ -30,5 +31,8 @@ object NotificationManager {
                 Log.i("Find", (_notifications[i].text == ntf.text).toString())
             }
         }
+    }
+    fun initNotifications(list: MutableList<Notification>){
+        _notifications = list
     }
 }

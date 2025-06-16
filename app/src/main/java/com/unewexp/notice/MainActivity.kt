@@ -48,14 +48,20 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.unewexp.notice.API.Common
+import com.unewexp.notice.API.RetrofitServices
 import com.unewexp.notice.ui.theme.NoticeTheme
 import com.unewexp.notice.ui.theme.Typography
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.UUID
 
 class MainActivity : ComponentActivity() {
 
     private val recordController = RecordController(this)
     private var countDownTimer: CountDownTimer? = null
+    lateinit var service: RetrofitServices
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +71,8 @@ class MainActivity : ComponentActivity() {
             arrayOf(Manifest.permission.RECORD_AUDIO),
             777,
         )
+
+        service = Common.retrofitService
 
         val userId = UUID.randomUUID().toString()
         for (i in 1..30) {
@@ -103,6 +111,18 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun getNotifications() {
+        service.getNotifications().enqueue(object : Callback<MutableList<Notification>> {
+            override fun onFailure(call: Call<MutableList<Notification>>, t: Throwable) {
+
+            }
+
+            override fun onResponse(call: Call<MutableList<Notification>>, response: Response<MutableList<Notification>>) {
+                response.body() as MutableList<Notification>
+            }
+        })
     }
 
     private fun onButtonClicked() {
