@@ -4,7 +4,7 @@ import java.util.UUID
 
 data class Notification(
     val id: String = UUID.randomUUID().toString(),
-    var userId: String,
+    var userId: Int,
     var text: String,
     var category: String,
     var date: String,

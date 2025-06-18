@@ -1,7 +1,11 @@
 package com.unewexp.notice
 
+import android.content.Context
 import android.util.Log
+import com.google.gson.Gson
 import kotlin.collections.mutableListOf
+import androidx.core.content.edit
+import com.google.gson.reflect.TypeToken
 
 object NotificationManager {
     private var _notifications = mutableListOf<Notification>()
@@ -34,5 +38,29 @@ object NotificationManager {
     }
     fun initNotifications(list: MutableList<Notification>){
         _notifications = list
+    }
+
+    fun saveNotifications(context: Context) {
+        val sharedPreferences = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        sharedPreferences.edit {
+
+            val gson = Gson()
+            val json = gson.toJson(notifications)
+
+            putString("notifications", json)
+        }
+    }
+
+    fun loadNotifications(context: Context): List<Notification> {
+        val sharedPreferences = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        val json = sharedPreferences.getString("notifications", null)
+
+        return if (json != null) {
+            val gson = Gson()
+            val type = object : TypeToken<List<Notification>>() {}.type
+            gson.fromJson(json, type) ?: emptyList()
+        } else {
+            emptyList()
+        }
     }
 }

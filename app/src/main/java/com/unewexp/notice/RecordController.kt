@@ -8,14 +8,16 @@ import android.util.Log
 class RecordController(private val context: Context) {
 
     private var audioRecorder: MediaRecorder? = null
+    private var path = ""
 
     fun start() {
         Log.d(TAG, "Start")
+        path = getAudioPath()
         audioRecorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS)
             setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-            setOutputFile(getAudioPath())
+            setOutputFile(path)
             prepare()
             start()
         }
@@ -25,13 +27,14 @@ class RecordController(private val context: Context) {
         return "${Environment.getExternalStorageDirectory().absolutePath}/AudioBooks/au${System.currentTimeMillis()}.ogg"
     }
 
-    fun stop() {
+    fun stop(): String {
         audioRecorder?.let {
             Log.d(TAG, "Stop")
             it.stop()
             it.release()
         }
         audioRecorder = null
+        return path
     }
 
     fun isAudioRecording() = audioRecorder != null
